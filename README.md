@@ -44,7 +44,7 @@ python -m pip install --upgrade pip && pip install -r requirements.txt
 ```bash
 TOKEN = 'key'
 ```
-#### Миграции базы данных:
+#### Миграции базы данных (не обязательно):
 ```bash
 alembic revision --message="Initial" --autogenerate
 alembic upgrade head

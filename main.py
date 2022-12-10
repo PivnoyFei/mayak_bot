@@ -2,7 +2,7 @@ import telebot
 
 from db import Parsing, engine
 from settings import TOKEN
-from utils import file_check, waiting_for_file
+from utils import file_check, parser, waiting_for_file
 
 db_parsing = Parsing(engine)
 bot = telebot.TeleBot(TOKEN)
@@ -22,19 +22,26 @@ def start_message(message):
 
 @bot.message_handler(content_types=['document'])
 def get_file(message):
+    """
+    Получает файл от пользователя и делает его проверку "file_check".
+    Если файл соотвествует, пробует сохранить.
+    Если такой магазин уже есть ловит исключение и предупреждает пользователя.
+    """
     items = file_check(bot, message)
     if not items:
         return waiting_for_file(bot, message)
-    for name, url, x in zip(*items):
-        if not db_parsing.create(name, url, x):
+    for name, url, xpath in zip(*items):
+        if not db_parsing.create(name, url, xpath):
             bot.send_message(
                 message.chat.id, f"Имя - {name}, уже есть в базе данных"
             )
+        average = parser(name, url, xpath)
         bot.send_message(
             message.chat.id,
             f"name - {name}\n"
             f"url - {url}\n"
-            f"x - {x}",
+            f"xpath - {xpath}\n"
+            f"Средняя стоймость зюзюблика - {average}",
             parse_mode="html"
         )
 

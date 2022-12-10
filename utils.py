@@ -1,6 +1,11 @@
 import os
+import re
+from statistics import mean
 
 import pandas as pd
+import requests
+from bs4 import BeautifulSoup as bs
+from lxml import etree
 
 from settings import FILES_DIR
 
@@ -33,3 +38,12 @@ def file_check(bot, message) -> tuple | None:
             os.remove(src)
     else:
         waiting_for_file(message)
+
+
+def parser(name, url, xpath):
+    response = requests.get(url, headers={'Content-Type': 'text/html', })
+    response = bs(response.text, 'html.parser')
+    dom = etree.HTML(str(response))
+    set_nums = {("".join(re.findall(r'\b\d+\b', i))) for i in dom.xpath(xpath)}
+    set_nums = {int(i) for i in set_nums if i.isdigit()}
+    return round(mean(set_nums))

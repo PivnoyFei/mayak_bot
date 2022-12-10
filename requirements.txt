@@ -6,3 +6,5 @@ openpyxl==3.0.10
 sqlalchemy==1.4.44
 databases==0.6.2
 aiosqlite==0.17.0
+beautifulsoup4==4.11.1
+lxml==4.9.0
