@@ -35,7 +35,7 @@ def get_file(message):
             bot.send_message(
                 message.chat.id, f"Имя - {name}, уже есть в базе данных"
             )
-        average = parser(name, url, xpath)
+        average = parser(url, xpath)
         bot.send_message(
             message.chat.id,
             f"name - {name}\n"

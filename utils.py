@@ -10,7 +10,7 @@ from lxml import etree
 from settings import FILES_DIR
 
 
-def waiting_for_file(bot, message, erorr=None):
+def waiting_for_file(bot, message, erorr=None) -> None:
     text = "Отправте файл в формате csv. С полями - NAME, URL, XPATH"
     bot.reply_to(message, erorr if erorr else text)
 
@@ -23,7 +23,7 @@ def file_check(bot, message) -> tuple | None:
 
         size = message.document.file_name.split(".")[-1].lower()
         if size not in ("csv", "xlsx"):
-            waiting_for_file(message, "Неверный формат файла")
+            waiting_for_file(bot, message, "Неверный формат файла")
 
         src = FILES_DIR / f"{name}.{size}"
         try:
@@ -33,14 +33,14 @@ def file_check(bot, message) -> tuple | None:
             data = read_file[size](src)
             return data["NAME"], data["URL"], data["XPATH"]
         except Exception as e:
-            waiting_for_file(message, f"Нет колонки {e}")
+            waiting_for_file(bot, message, f"Нет колонки {e}")
         finally:
             os.remove(src)
     else:
-        waiting_for_file(message)
+        waiting_for_file(bot, message)
 
 
-def parser(name, url, xpath):
+def parser(url: str, xpath: str) -> int:
     response = requests.get(url, headers={'Content-Type': 'text/html', })
     response = bs(response.text, 'html.parser')
     dom = etree.HTML(str(response))
