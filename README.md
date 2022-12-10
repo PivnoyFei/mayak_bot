@@ -44,6 +44,11 @@ python -m pip install --upgrade pip && pip install -r requirements.txt
 ```bash
 TOKEN = 'key'
 ```
+#### Миграции базы данных:
+```bash
+alembic revision --message="Initial" --autogenerate
+alembic upgrade head
+```
 #### Запускаем проект:
 ```bash
 python main.py
