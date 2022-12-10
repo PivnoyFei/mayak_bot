@@ -1,3 +1,4 @@
+import csv
 import os
 import re
 from statistics import mean
@@ -18,14 +19,13 @@ def waiting_for_file(bot, message, erorr=None) -> None:
 def file_check(bot, message) -> tuple | None:
     """Проверка формата файла и наличия колонок в нем."""
     if message.content_type == "document":
-        name = message.from_user.username
         file_info = bot.get_file(message.document.file_id)
 
         size = message.document.file_name.split(".")[-1].lower()
         if size not in ("csv", "xlsx"):
             waiting_for_file(bot, message, "Неверный формат файла")
 
-        src = FILES_DIR / f"{name}.{size}"
+        src = FILES_DIR / f"{message.from_user.username}.{size}"
         try:
             with open(src, "wb") as file:
                 file.write(bot.download_file(file_info.file_path))
@@ -38,6 +38,23 @@ def file_check(bot, message) -> tuple | None:
             os.remove(src)
     else:
         waiting_for_file(bot, message)
+
+
+def file_send(bot, message, send_message):
+    """Создает файл и результатами парсинга и отправляет пользователю."""
+    src = FILES_DIR / f"{message.from_user.username}.csv"
+    try:
+        with open(src, "wt", encoding="utf-8") as file:
+            writer = csv.writer(file, delimiter=",")
+            writer.writerows(send_message)
+        with open(src, 'rb') as file:
+            bot.send_document(message.chat.id, file)
+    except TypeError:
+        bot.send_message(
+            message.chat.id, "Произошла ошибка при отправке файла"
+        )
+    finally:
+        os.remove(src)
 
 
 def parser(url: str, xpath: str) -> int:

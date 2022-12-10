@@ -2,7 +2,7 @@ import telebot
 
 from db import Parsing, engine
 from settings import TOKEN
-from utils import file_check, parser, waiting_for_file
+from utils import file_check, file_send, parser, waiting_for_file
 
 db_parsing = Parsing(engine)
 bot = telebot.TeleBot(TOKEN)
@@ -30,20 +30,20 @@ def get_file(message):
     items = file_check(bot, message)
     if not items:
         return waiting_for_file(bot, message)
+    send_message = []
     for name, url, xpath in zip(*items):
         if not db_parsing.create(name, url, xpath):
             bot.send_message(
                 message.chat.id, f"Имя - {name}, уже есть в базе данных"
             )
         average = parser(url, xpath)
-        bot.send_message(
-            message.chat.id,
-            f"name - {name}\n"
-            f"url - {url}\n"
-            f"xpath - {xpath}\n"
-            f"Средняя стоймость зюзюблика - {average}",
-            parse_mode="html"
-        )
+        send_message.append((
+            f"name - {name}",
+            f"url - {url}",
+            f"xpath - {xpath}",
+            f"Средняя стоймость зюзюблика - {average}"
+        ))
+    file_send(bot, message, send_message)
 
 
 if __name__ == '__main__':
