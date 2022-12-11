@@ -12,7 +12,7 @@ from settings import FILES_DIR
 
 
 def waiting_for_file(bot, message, erorr=None) -> None:
-    text = "Отправте файл в формате csv. С полями - NAME, URL, XPATH"
+    text = "Отправте файл в формате xlsx или csv. С полями - NAME, URL, XPATH"
     bot.reply_to(message, erorr if erorr else text)
 
 
