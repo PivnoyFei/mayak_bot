@@ -23,7 +23,7 @@ Python 3.11, pyTelegramBotAPI.
 Клонируем репозиторий и переходим в него:
 ```bash
 git clone https://github.com/PivnoyFei/mayak_bot
-cd frames_fastapi
+cd mayak_bot
 ```
 #### Создаем и активируем виртуальное окружение:
 ```bash
