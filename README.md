@@ -43,6 +43,7 @@ python -m pip install --upgrade pip && pip install -r requirements.txt
 #### Создаем файл .env, добавляем TOKEN бота в .env
 ```bash
 TOKEN = 'key'
+DATABASE_URL = 'sqlite:///sqlite3.db' 
 ```
 #### Миграции базы данных (не обязательно):
 ```bash

@@ -1,0 +1,3 @@
+NAME,URL,XPATH
+vertical,https://vertical.ru/catalog/tovary-dlya-doma/novogodnie-tovary/,//div[@class='price-wrapper']/div/text()
+citilink,https://www.citilink.ru/catalog/smartfony/APPLE/,//span[@class='ProductCardHorizontal__price_current-price js--ProductCardHorizontal__price_current-price']/text()

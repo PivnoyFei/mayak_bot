@@ -1,6 +1,7 @@
 import csv
 import os
 import re
+import uuid
 from statistics import mean
 
 import pandas as pd
@@ -9,6 +10,10 @@ from bs4 import BeautifulSoup as bs
 from lxml import etree
 
 from settings import FILES_DIR
+
+
+def generate_uuid():
+    return str(uuid.uuid4().hex)
 
 
 def waiting_for_file(bot, message, erorr=None) -> None:
@@ -25,7 +30,7 @@ def file_check(bot, message) -> tuple | None:
         if size not in ("csv", "xlsx"):
             waiting_for_file(bot, message, "Неверный формат файла")
 
-        src = FILES_DIR / f"{message.from_user.username}.{size}"
+        src = FILES_DIR / f"{generate_uuid()}.{size}"
         try:
             with open(src, "wb") as file:
                 file.write(bot.download_file(file_info.file_path))
@@ -42,7 +47,7 @@ def file_check(bot, message) -> tuple | None:
 
 def file_send(bot, message, send_message):
     """Создает файл и результатами парсинга и отправляет пользователю."""
-    src = FILES_DIR / f"{message.from_user.username}.csv"
+    src = FILES_DIR / f"{generate_uuid()}.csv"
     try:
         with open(src, "wt", encoding="utf-8") as file:
             writer = csv.writer(file, delimiter=",")
