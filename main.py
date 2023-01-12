@@ -1,20 +1,22 @@
+from typing import Any
+
 from aiogram import Bot, Dispatcher, executor, types
 
 from db import Parsing, engine
-from settings import TOKEN
-from utils import file_check, file_send, parser, waiting_for_file
+from settings import DATABASE_URL, TOKEN
+from utils import file_check, file_send, parser, waiting_file
 
 db_parsing = Parsing(engine)
 bot = Bot(TOKEN)
 dp = Dispatcher(bot)
 
 
-async def on_startup(_):
+async def on_startup(_: Any) -> None:
     print('Бот вышел в онлайн')
 
 
 @dp.message_handler(commands=["start"])
-async def start_message(message: types.Message):
+async def start_message(message: types.Message) -> None:
     await bot.send_message(
         message.chat.id,
         "Добро пожаловать, {0.first_name}!\nЯ — <b>{1.first_name}</b>.\n"
@@ -22,11 +24,11 @@ async def start_message(message: types.Message):
         .format(message.from_user, await bot.get_me()),
         parse_mode="html"
     )
-    await waiting_for_file(bot, message)
+    await waiting_file(bot, message)
 
 
 @dp.message_handler(content_types=['document'])
-async def get_file(message: types.Message):
+async def get_file(message: types.Message) -> None:
     """
     Получает файл от пользователя и делает его проверку "file_check".
     Если файл соотвествует, пробует сохранить.
@@ -34,7 +36,7 @@ async def get_file(message: types.Message):
     """
     items = await file_check(bot, message)
     if not items:
-        return await waiting_for_file(bot, message)
+        return await waiting_file(bot, message)
     send_message = []
     for name, url, xpath in zip(*items):
         if not await db_parsing.create(name, url, xpath):
@@ -52,7 +54,7 @@ async def get_file(message: types.Message):
 
 
 if __name__ == '__main__':
-    if TOKEN:
+    if TOKEN and DATABASE_URL:
         executor.start_polling(dp, skip_updates=True, on_startup=on_startup)
     else:
         print("Нет переменной TOKEN")

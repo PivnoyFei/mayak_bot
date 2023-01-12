@@ -1,13 +1,14 @@
-import databases
+from typing import Any
+
 import sqlalchemy
 from sqlalchemy import Column, Integer, String, Table, Text
+from sqlalchemy.engine import Engine
 from sqlalchemy.exc import IntegrityError
 
 from settings import DATABASE_URL
 
 metadata = sqlalchemy.MetaData()
-database = databases.Database(DATABASE_URL)
-engine = sqlalchemy.create_engine(DATABASE_URL)
+engine: Engine = sqlalchemy.create_engine(DATABASE_URL)
 
 parsing = Table(
     "parsing", metadata,
@@ -20,14 +21,14 @@ metadata.create_all(engine)
 
 
 class DataConn:
-    def __init__(self, engine):
+    def __init__(self, engine: Engine) -> None:
         self.engine = engine
 
-    def __enter__(self):
+    def __enter__(self) -> Any:
         self.conn = self.engine.connect()
         return self.conn
 
-    def __exit__(self, exc_type, exc_val, exc_tb):
+    def __exit__(self, exc_type: Any, exc_val: Any, exc_tb: Any) -> None:
         self.conn.close()
 
 
