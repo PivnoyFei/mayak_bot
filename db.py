@@ -32,7 +32,7 @@ class DataConn:
 
 
 class Parsing(DataConn):
-    def create(self, name: str, url: str, xpath: str) -> bool:
+    async def create(self, name: str, url: str, xpath: str) -> bool:
         try:
             with DataConn(engine) as conn:
                 query = (

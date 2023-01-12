@@ -16,7 +16,7 @@
 
 ### Стек: 
 ```
-Python 3.11, pyTelegramBotAPI.
+Python 3.11, aiogram 2.24.
 ```
 
 ### Запуск проекта
